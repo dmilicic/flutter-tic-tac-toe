@@ -7,20 +7,24 @@ import 'package:flutter_tic_tac_toe/game/game.dart';
 class GamePage extends StatefulWidget {
 
   final String title;
+  Game game;
 
   @override
   _GamePageState createState() => _GamePageState();
 
-  GamePage(this.title);
+  GamePage(this.title) {
+    this.game = Game();
+  };
 }
 
 class _GamePageState extends State<GamePage> {
 
   List<int> board;
+  int currentPlayer;
 
   void _onTap(int idx) {
     setState(() {
-      board[idx] = 1;
+      board[idx] = currentPlayer;
     });
   }
 
@@ -29,10 +33,10 @@ class _GamePageState extends State<GamePage> {
   void initState() {
     super.initState();
 
-    board = List.generate(9, (idx) {
-      var rng = Random();
-      return rng.nextInt(3);
-    });
+    currentPlayer = Game.PLAYER_X;
+    board = List.generate(9, (idx) => 0);
+
+    widget.game.ai(board, currentPlayer, 0);
   }
 
   @override
@@ -45,12 +49,22 @@ class _GamePageState extends State<GamePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: GridView.count(
-        crossAxisCount: 3,
-        children: List.generate(9, (idx) {
-          var symbol = Game.symbols[board[idx]];
-          return Field(idx: idx, playerSymbol: symbol, onTap: _onTap);
-        }),
+      body: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(60),
+            child: Text("You are playing as X", style: TextStyle(fontSize: 30),),
+          ),
+          Expanded(
+            child: GridView.count(
+              crossAxisCount: 3,
+              children: List.generate(9, (idx) {
+                var symbol = Game.symbols[board[idx]];
+                return Field(idx: idx, playerSymbol: symbol, onTap: _onTap);
+              }),
+            ),
+          ),
+        ],
       ),
     );
   }
