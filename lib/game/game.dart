@@ -1,13 +1,13 @@
 class Game {
 
-  static List<String> symbols = ["", "X", "O"]; // X is player 1, O is player 2
-  static const int EMPTY_SPACE = 0;
-
   // evaluation condition values
-  static const int PLAYER_X = 1;
-  static const int PLAYER_Y = -1;
+  static const int HUMAN = 1;
+  static const int AI_PLAYER = -1;
   static const int NO_WINNERS_YET = 0;
   static const int DRAW = 2;
+
+  static const int EMPTY_SPACE = 0;
+  static Map<int, String> symbols = {EMPTY_SPACE: "", HUMAN: "X", AI_PLAYER: "O"};
 
   // arbitrary values for winning, draw and losing conditions
   static const int WIN_SCORE = 100;
@@ -66,25 +66,14 @@ class Game {
   //endregion
 
   /// Returns the optimal move based on the state of the board.
-  Move ai(List<int> board, int currentPlayer, int previousMove) {
+  int ai(List<int> board, int currentPlayer) {
 
-    int evaluation = evaluateBoard(board);
-
-    if (evaluation == currentPlayer)
-      return Move(previousMove, WIN_SCORE);
-
-    if (evaluation == DRAW)
-      return Move(previousMove, DRAW_SCORE);
-
-    if (evaluation == flipPlayer(currentPlayer)) {
-      return Move(previousMove, LOSE_SCORE);
-    }
+    List<int> newBoard;
+    // will contain our next best score and move
+    int bestScore = -10000;
+    int bestMove;
 
     // try all possible moves
-    List<int> newBoard;
-    // will contain our next best move
-    Move bestMove;
-
     for(int currentMove = 0; currentMove < board.length; currentMove++) {
       if (!isMoveLegal(board, currentMove)) continue;
 
@@ -93,12 +82,17 @@ class Game {
 
       // make the move
       newBoard[currentMove] = currentPlayer;
-      Move nextMove = ai(newBoard, flipPlayer(currentPlayer), currentMove);
-      nextMove.score = -nextMove.score; // what is a good score for the opposite player is opposite of good score for us
+
+      int nextScore = -solve(newBoard, flipPlayer(currentPlayer));
+
+      print(board.toString());
+      print(nextScore);
+      print("\n");
 
       // check if the current move is better than our best found move
-      if (bestMove == null || bestMove.score < nextMove.score) {
-        bestMove = nextMove;
+      if (nextScore > bestScore) {
+        bestScore = nextScore;
+        bestMove = currentMove;
       }
     }
 
@@ -145,11 +139,4 @@ class Game {
     return bestScore;
   }
 
-}
-
-class Move {
-  int move;
-  int score;
-
-  Move(this.move, this.score);
 }

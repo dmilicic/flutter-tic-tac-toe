@@ -14,7 +14,7 @@ class GamePage extends StatefulWidget {
 
   GamePage(this.title) {
     this.game = Game();
-  };
+  }
 }
 
 class _GamePageState extends State<GamePage> {
@@ -22,21 +22,31 @@ class _GamePageState extends State<GamePage> {
   List<int> board;
   int currentPlayer;
 
-  void _onTap(int idx) {
+  void _movePlayed(int idx) {
     setState(() {
       board[idx] = currentPlayer;
+
+      if (currentPlayer == Game.HUMAN) {
+        // switch to AI player
+        currentPlayer = Game.AI_PLAYER;
+        int aiMove = widget.game.ai(board, Game.AI_PLAYER);
+        _movePlayed(aiMove);
+
+      } else {
+        currentPlayer = Game.HUMAN;
+      }
     });
   }
+
+
 
 
   @override
   void initState() {
     super.initState();
 
-    currentPlayer = Game.PLAYER_X;
+    currentPlayer = Game.HUMAN;
     board = List.generate(9, (idx) => 0);
-
-    widget.game.ai(board, currentPlayer, 0);
   }
 
   @override
@@ -60,7 +70,7 @@ class _GamePageState extends State<GamePage> {
               crossAxisCount: 3,
               children: List.generate(9, (idx) {
                 var symbol = Game.symbols[board[idx]];
-                return Field(idx: idx, playerSymbol: symbol, onTap: _onTap);
+                return Field(idx: idx, playerSymbol: symbol, onTap: _movePlayed);
               }),
             ),
           ),
