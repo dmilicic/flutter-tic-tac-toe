@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "943651103979",
+    "firebase_url": "https://fluttertictactoe.firebaseio.com",
+    "project_id": "fluttertictactoe",
+    "storage_bucket": "fluttertictactoe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:943651103979:android:77f734045108e1da",
+        "android_client_info": {
+          "package_name": "com.dmilicic.fluttertictactoe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "943651103979-41090qon3k82frip9h3jer3au4osmc2m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAN8M05Y9IIE9Kl_ckS1M4sPkkXulxAW0I"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_tic_tac_toe/field.dart';
+import 'package:flutter_tic_tac_toe/ui/field.dart';
 import 'package:flutter_tic_tac_toe/game/game.dart';
 
 class GamePage extends StatefulWidget {
@@ -64,7 +64,7 @@ class _GamePageState extends State<GamePage> {
 
   void _movePlayed(int idx) {
     setState(() {
-      board[idx] = currentPlayer;
+        board[idx] = currentPlayer;
 
       if (currentPlayer == Game.HUMAN) {
         // switch to AI player

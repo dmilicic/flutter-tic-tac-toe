@@ -1,3 +1,5 @@
+import 'package:flutter_tic_tac_toe/storage/VictoryRepository.dart';
+
 class Game {
 
   // evaluation condition values
@@ -27,9 +29,13 @@ class Game {
 
   // callbacks into our UI
   void Function(int idx) showMoveOnUi;
-  void Function(int winningPlayer) onGameEnd;
+  void Function(int winningPlayer) showGameEnd;
 
-  Game(this.showMoveOnUi, this.onGameEnd);
+  VictoryRepository _repository;
+
+  Game(this.showMoveOnUi, this.showGameEnd) {
+    _repository = VictoryRepository.getInstance();
+  }
 
   void onHumanPlayed(List<int> board) {
 
@@ -52,6 +58,14 @@ class Game {
       onGameEnd(evaluation);
     else
       showMoveOnUi(aiMove);
+  }
+
+  void onGameEnd(int winner) {
+    if (winner == AI_PLAYER) {
+      _repository.addVictory(); // add to the bot victories :)
+    }
+
+    showGameEnd(winner);
   }
 
   //region utility

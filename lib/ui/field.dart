@@ -62,7 +62,9 @@ class Field extends StatefulWidget {
 class _FieldState extends State<Field> {
 
   void _handleTap() {
-    widget.onTap(widget.idx);
+    // only send tap events if the field is empty
+    if (widget.playerSymbol == "")
+      widget.onTap(widget.idx);
   }
 
   @override
