@@ -7,14 +7,14 @@ class Game {
   static const int DRAW = 2;
 
   static const int EMPTY_SPACE = 0;
-  static Map<int, String> symbols = {EMPTY_SPACE: "", HUMAN: "X", AI_PLAYER: "O"};
+  static const SYMBOLS = {EMPTY_SPACE: "", HUMAN: "X", AI_PLAYER: "O"};
 
   // arbitrary values for winning, draw and losing conditions
   static const int WIN_SCORE = 100;
   static const int DRAW_SCORE = 0;
   static const int LOSE_SCORE = -100;
 
-  static const List<List<int>> WIN_CONDITIONS_LIST = [
+  static const WIN_CONDITIONS_LIST = [
     [0, 1, 2],
     [3, 4, 5],
     [6, 7, 8],
@@ -24,6 +24,35 @@ class Game {
     [0, 4, 8],
     [2, 4, 6],
   ];
+
+  // callbacks into our UI
+  void Function(int idx) showMoveOnUi;
+  void Function(int winningPlayer) onGameEnd;
+
+  Game(this.showMoveOnUi, this.onGameEnd);
+
+  void onHumanPlayed(List<int> board) {
+
+    // evaluate the board after the human player move
+    int evaluation = evaluateBoard(board);
+    if (evaluation != NO_WINNERS_YET) {
+      onGameEnd(evaluation);
+      return;
+    }
+
+    // calculate the next move
+    int aiMove = ai(board, Game.AI_PLAYER);
+
+    // do the next move
+    board[aiMove] = AI_PLAYER;
+
+    // evaluate the board after the AI player move
+    evaluation = evaluateBoard(board);
+    if (evaluation != NO_WINNERS_YET)
+      onGameEnd(evaluation);
+    else
+      showMoveOnUi(aiMove);
+  }
 
   //region utility
   bool isBoardFull(List<int> board) {
@@ -83,11 +112,7 @@ class Game {
       // make the move
       newBoard[currentMove] = currentPlayer;
 
-      int nextScore = -solve(newBoard, flipPlayer(currentPlayer));
-
-      print(board.toString());
-      print(nextScore);
-      print("\n");
+      int nextScore = -getBestScore(newBoard, flipPlayer(currentPlayer));
 
       // check if the current move is better than our best found move
       if (nextScore > bestScore) {
@@ -99,7 +124,8 @@ class Game {
     return bestMove;
   }
 
-  int solve(List<int> board, int currentPlayer) {
+  /// Returns the best possible score for a certain board condition.
+  int getBestScore(List<int> board, int currentPlayer) {
     int evaluation = evaluateBoard(board);
 
     if (evaluation == currentPlayer)
@@ -128,7 +154,7 @@ class Game {
 
       // solve for the next player
       // what is a good score for the opposite player is opposite of good score for us
-      int nextScore = -solve(newBoard, flipPlayer(currentPlayer));
+      int nextScore = -getBestScore(newBoard, flipPlayer(currentPlayer));
 
       // check if the current move is better than our best found move
       if (nextScore > bestScore) {
@@ -138,5 +164,4 @@ class Game {
 
     return bestScore;
   }
-
 }

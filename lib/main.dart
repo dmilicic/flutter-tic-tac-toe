@@ -69,14 +69,19 @@ class _HomePageState extends State<HomePage> {
         children: <Widget>[
           Text("Welcome to Flutter Tic Tac Toe!", style: TextStyle(fontSize: 20),),
           Center(
-            child: RaisedButton(
-              onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => GamePage(widget.title))
-                  );
-            },
-              child: Text("New game!"),
+            child: ButtonTheme(
+              minWidth: 200,
+              height: 80,
+              child: RaisedButton(
+                color: Colors.amber,
+                onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => GamePage(widget.title))
+                    );
+              },
+                child: Text("New game!", style: TextStyle(fontSize: 20),),
+              ),
             ),
           ),
         ],
