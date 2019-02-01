@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'ui/HomePage.dart';
+import 'ui/home_page.dart';
 
 String title = "Flutter Tic Tac Toe";
 

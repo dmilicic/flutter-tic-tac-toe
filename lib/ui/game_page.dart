@@ -1,7 +1,8 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_tic_tac_toe/ui/field.dart';
-import 'package:flutter_tic_tac_toe/game/game.dart';
+import 'package:flutter_tic_tac_toe/ai/Ai.dart';
+import 'package:flutter_tic_tac_toe/ui/Field.dart';
+import 'package:flutter_tic_tac_toe/ui/game_presenter.dart';
 
 class GamePage extends StatefulWidget {
 
@@ -17,10 +18,10 @@ class _GamePageState extends State<GamePage> {
 
   List<int> board;
   int currentPlayer;
-  Game game;
+  GamePresenter game;
 
   _GamePageState() {
-    this.game = Game(_movePlayed, _onGameEnd);
+    this.game = GamePresenter(_movePlayed, _onGameEnd);
   }
 
   void _onGameEnd(int winner) {
@@ -28,11 +29,11 @@ class _GamePageState extends State<GamePage> {
     var title = "Game over!";
     var content = "You lose :(";
     switch(winner) {
-      case Game.HUMAN: // will never happen :)
+      case Ai.HUMAN: // will never happen :)
         title = "Congratulations!";
         content = "You managed to beat an unbeatable AI!";
         break;
-      case Game.AI_PLAYER:
+      case Ai.AI_PLAYER:
         title = "Game Over!";
         content = "You lose :(";
         break;
@@ -66,13 +67,13 @@ class _GamePageState extends State<GamePage> {
     setState(() {
         board[idx] = currentPlayer;
 
-      if (currentPlayer == Game.HUMAN) {
+      if (currentPlayer == Ai.HUMAN) {
         // switch to AI player
-        currentPlayer = Game.AI_PLAYER;
+        currentPlayer = Ai.AI_PLAYER;
         game.onHumanPlayed(board);
 
       } else {
-        currentPlayer = Game.HUMAN;
+        currentPlayer = Ai.HUMAN;
       }
     });
   }
@@ -84,7 +85,7 @@ class _GamePageState extends State<GamePage> {
   }
 
   void reinitialize() {
-    currentPlayer = Game.HUMAN;
+    currentPlayer = Ai.HUMAN;
     board = List.generate(9, (idx) => 0);
   }
 
@@ -106,7 +107,7 @@ class _GamePageState extends State<GamePage> {
             child: GridView.count(
               crossAxisCount: 3,
               children: List.generate(9, (idx) {
-                var symbol = Game.SYMBOLS[board[idx]];
+                var symbol = Ai.SYMBOLS[board[idx]];
                 return Field(idx: idx, playerSymbol: symbol, onTap: _movePlayed);
               }),
             ),

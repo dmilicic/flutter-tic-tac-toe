@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tic_tac_toe/ui/HomePresenter.dart';
-import 'package:flutter_tic_tac_toe/ui/gamePage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_tic_tac_toe/ui/home_presenter.dart';
+import 'package:flutter_tic_tac_toe/ui/game_page.dart';
 
 
 class HomePage extends StatefulWidget {

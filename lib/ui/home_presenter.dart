@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_tic_tac_toe/storage/VictoryRepository.dart';
+import 'package:flutter_tic_tac_toe/storage/victory_repository.dart';
 
 class HomePresenter {
 
