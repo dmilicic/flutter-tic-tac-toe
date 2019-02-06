@@ -24,7 +24,7 @@ class VictoryRepository {
   }
 
   /// Reactive getter for victory count
-  int gsgetVictoryCount(AsyncSnapshot<dynamic> snapshot) {
+  int getVictoryCount(AsyncSnapshot<dynamic> snapshot) {
     if (snapshot.hasData) {
       _documentCache = _getDocument(snapshot.data);
       return _documentCache.data[FIELD_COUNT];
