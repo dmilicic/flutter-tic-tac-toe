@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
 
-class Field extends StatefulWidget {
+class Field extends StatelessWidget {
 
   final int idx;
   final String playerSymbol;
@@ -17,9 +17,13 @@ class Field extends StatefulWidget {
 
   Field({Key key, this.idx, this.playerSymbol, @required this.onTap}) : super(key: key);
 
-  @override
-  State createState() => _FieldState();
+  void _handleTap() {
+    // only send tap events if the field is empty
+    if (playerSymbol == "")
+      onTap(idx);
+  }
 
+  /// Returns a border to draw depending on this field index.
   Border _determineBorder(int idx) {
     Border determinedBorder = Border.all();
 
@@ -57,31 +61,20 @@ class Field extends StatefulWidget {
   }
 
 
-}
-
-class _FieldState extends State<Field> {
-
-  void _handleTap() {
-    // only send tap events if the field is empty
-    if (widget.playerSymbol == "")
-      widget.onTap(widget.idx);
-  }
-
   @override
   Widget build(BuildContext context) {
-
     return GestureDetector(
       onTap: _handleTap,
       child: Container(
         margin: const EdgeInsets.all(0.0),
         decoration: BoxDecoration(
-            border: widget._determineBorder(widget.idx)
+            border: _determineBorder(idx)
         ),
         child: Center(
-            child: Text(widget.playerSymbol, style: TextStyle(fontSize: 50))
+            child: Text(playerSymbol, style: TextStyle(fontSize: 50))
         ),
       ),
     );
   }
-}
 
+}

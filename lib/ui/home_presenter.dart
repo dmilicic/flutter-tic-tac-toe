@@ -13,7 +13,8 @@ class HomePresenter {
     return repository.getVictoryStream();
   }
 
-  int getVictoryCount(AsyncSnapshot snapshot) {
+  /// Gets a victory count from a stream snapshot.
+  int getVictoryCountFromStream(AsyncSnapshot snapshot) {
     return repository.getVictoryCount(snapshot);
   }
 

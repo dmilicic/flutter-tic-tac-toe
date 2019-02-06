@@ -18,7 +18,7 @@ class GamePresenter {
 
   void onHumanPlayed(List<int> board) {
 
-    // evaluate the board after the human player move
+    // evaluate the board after the human player
     int evaluation = Utils.evaluateBoard(board);
     if (evaluation != Ai.NO_WINNERS_YET) {
       onGameEnd(evaluation);
