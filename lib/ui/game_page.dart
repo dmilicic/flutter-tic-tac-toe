@@ -1,27 +1,33 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_tic_tac_toe/ai/Ai.dart';
-import 'package:flutter_tic_tac_toe/ui/Field.dart';
+import 'package:flutter_tic_tac_toe/ai/ai.dart';
+import 'package:flutter_tic_tac_toe/ui/field.dart';
+import 'package:flutter_tic_tac_toe/ui/game_board.dart';
 import 'package:flutter_tic_tac_toe/ui/game_presenter.dart';
+import 'package:flutter_tic_tac_toe/ui/game_state_inherited_widget.dart';
 
 class GamePage extends StatefulWidget {
 
   final String title;
 
-  @override
-  _GamePageState createState() => _GamePageState();
-
   GamePage(this.title);
+
+  @override
+  GamePageState createState() => GamePageState();
 }
 
-class _GamePageState extends State<GamePage> {
+class GamePageState extends State<GamePage> {
 
   List<int> board;
-  int currentPlayer;
-  GamePresenter game;
+  int _currentPlayer;
+  
+  GamePresenter _presenter;
+  
+  // contains widgets that display each cell
+  List<Widget> _fields;
 
-  _GamePageState() {
-    this.game = GamePresenter(_movePlayed, _onGameEnd);
+  GamePageState() {
+    this._presenter = GamePresenter(_movePlayed, _onGameEnd);
   }
 
   void _onGameEnd(int winner) {
@@ -65,17 +71,22 @@ class _GamePageState extends State<GamePage> {
 
   void _movePlayed(int idx) {
     setState(() {
-        board[idx] = currentPlayer;
+      board[idx] = _currentPlayer;
 
-      if (currentPlayer == Ai.HUMAN) {
+      if (_currentPlayer == Ai.HUMAN) {
         // switch to AI player
-        currentPlayer = Ai.AI_PLAYER;
-        game.onHumanPlayed(board);
+        _currentPlayer = Ai.AI_PLAYER;
+        _presenter.onHumanPlayed(board);
 
       } else {
-        currentPlayer = Ai.HUMAN;
+        _currentPlayer = Ai.HUMAN;
       }
     });
+  }
+
+
+  String getSymbolForIdx(int idx) {
+    return Ai.SYMBOLS[board[idx]];
   }
 
   @override
@@ -85,8 +96,14 @@ class _GamePageState extends State<GamePage> {
   }
 
   void reinitialize() {
-    currentPlayer = Ai.HUMAN;
+    _currentPlayer = Ai.HUMAN;
+    // generate the initial board
     board = List.generate(9, (idx) => 0);
+
+    // generate the widgets that will display the board
+    _fields = List.generate(9, (idx) {
+      return Field(idx: idx, onTap: _movePlayed);
+    });
   }
 
   @override
@@ -101,19 +118,43 @@ class _GamePageState extends State<GamePage> {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(60),
-            child: Text("You are playing as X", style: TextStyle(fontSize: 30),),
+            child: Text("You are playing as X", style: TextStyle(fontSize: 25),),
           ),
-          Expanded(
-            child: GridView.count(
-              crossAxisCount: 3,
-              children: List.generate(9, (idx) {
-                var symbol = Ai.SYMBOLS[board[idx]];
-                return Field(idx: idx, playerSymbol: symbol, onTap: _movePlayed);
-              }),
-            ),
-          ),
+          GameStateInheritedWidget(
+              state: this,
+              child: Expanded(
+                  child: GridView.count(
+                      crossAxisCount: 3,
+                      children: _fields
+                  ),
+              ),
+            )
         ],
       ),
     );
   }
 }
+
+
+
+/// Inherited widget that we will use to refresh our board fields/cells.
+class GameStateInheritedWidget extends InheritedWidget {
+  const GameStateInheritedWidget ({
+    Key key,
+    @required this.state,
+    @required Widget child,
+  })  : assert(child != null),
+        super(key: key, child: child);
+
+  static GameStateInheritedWidget of(BuildContext context) {
+    return context.inheritFromWidgetOfExactType(GameStateInheritedWidget);
+  }
+
+  final GamePageState state;
+
+  @override
+  bool updateShouldNotify(GameStateInheritedWidget old) {
+    return true;
+  }
+}
+

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_tic_tac_toe/ui/game_page.dart';
 
-
-class Field extends StatelessWidget {
+class Field extends StatefulWidget {
 
   final int idx;
-  final String playerSymbol;
   final Function(int idx) onTap;
 
   final BorderSide _borderSide = BorderSide(
@@ -15,16 +14,10 @@ class Field extends StatelessWidget {
   );
 
 
-  Field({Key key, this.idx, this.playerSymbol, @required this.onTap}) : super(key: key);
-
-  void _handleTap() {
-    // only send tap events if the field is empty
-    if (playerSymbol == "")
-      onTap(idx);
-  }
+  Field({Key key, this.idx, @required this.onTap}) : super(key: key);
 
   /// Returns a border to draw depending on this field index.
-  Border _determineBorder(int idx) {
+  Border _determineBorder() {
     Border determinedBorder = Border.all();
 
     switch(idx) {
@@ -61,14 +54,35 @@ class Field extends StatelessWidget {
   }
 
 
+
+  @override
+  _FieldState createState() => _FieldState();
+}
+
+class _FieldState extends State<Field> {
+
+  String playerSymbol;
+
+  void _handleTap() {
+    // only send tap events if the field is empty
+    if (playerSymbol == "")
+      widget.onTap(widget.idx);
+  }
+
+
   @override
   Widget build(BuildContext context) {
+
+    // determine the symbol that this widget needs to show
+    GameStateInheritedWidget inherited = GameStateInheritedWidget.of(context);
+    playerSymbol = inherited.state.getSymbolForIdx(widget.idx);
+
     return GestureDetector(
       onTap: _handleTap,
       child: Container(
         margin: const EdgeInsets.all(0.0),
         decoration: BoxDecoration(
-            border: _determineBorder(idx)
+            border: widget._determineBorder()
         ),
         child: Center(
             child: Text(playerSymbol, style: TextStyle(fontSize: 50))
@@ -76,5 +90,5 @@ class Field extends StatelessWidget {
       ),
     );
   }
-
 }
+
