@@ -2,9 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tic_tac_toe/ai/ai.dart';
 import 'package:flutter_tic_tac_toe/ui/field.dart';
-import 'package:flutter_tic_tac_toe/ui/game_board.dart';
 import 'package:flutter_tic_tac_toe/ui/game_presenter.dart';
-import 'package:flutter_tic_tac_toe/ui/game_state_inherited_widget.dart';
 
 class GamePage extends StatefulWidget {
 
@@ -22,9 +20,6 @@ class GamePageState extends State<GamePage> {
   int _currentPlayer;
   
   GamePresenter _presenter;
-  
-  // contains widgets that display each cell
-  List<Widget> _fields;
 
   GamePageState() {
     this._presenter = GamePresenter(_movePlayed, _onGameEnd);
@@ -99,16 +94,10 @@ class GamePageState extends State<GamePage> {
     _currentPlayer = Ai.HUMAN;
     // generate the initial board
     board = List.generate(9, (idx) => 0);
-
-    // generate the widgets that will display the board
-    _fields = List.generate(9, (idx) {
-      return Field(idx: idx, onTap: _movePlayed);
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-
 
     return Scaffold(
       appBar: AppBar(
@@ -120,41 +109,19 @@ class GamePageState extends State<GamePage> {
             padding: const EdgeInsets.all(60),
             child: Text("You are playing as X", style: TextStyle(fontSize: 25),),
           ),
-          GameStateInheritedWidget(
-              state: this,
-              child: Expanded(
-                  child: GridView.count(
+           Expanded(
+             child: GridView.count(
                       crossAxisCount: 3,
-                      children: _fields
+                      // generate the widgets that will display the board
+                      children: List.generate(9, (idx) {
+                        return Field(idx: idx, onTap: _movePlayed, playerSymbol: getSymbolForIdx(idx));
+                      }),
                   ),
               ),
-            )
         ],
       ),
     );
   }
 }
 
-
-
-/// Inherited widget that we will use to refresh our board fields/cells.
-class GameStateInheritedWidget extends InheritedWidget {
-  const GameStateInheritedWidget ({
-    Key key,
-    @required this.state,
-    @required Widget child,
-  })  : assert(child != null),
-        super(key: key, child: child);
-
-  static GameStateInheritedWidget of(BuildContext context) {
-    return context.inheritFromWidgetOfExactType(GameStateInheritedWidget);
-  }
-
-  final GamePageState state;
-
-  @override
-  bool updateShouldNotify(GameStateInheritedWidget old) {
-    return true;
-  }
-}
 

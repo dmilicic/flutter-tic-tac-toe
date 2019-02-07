@@ -3,17 +3,17 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 
-class VictoryRepository {
+class GameInfoRepository {
 
   static const String VICTORIES_DOC_NAME = "victories";
   static const String FIELD_COUNT = "count";
-  static VictoryRepository _victoryRepository;
+  static GameInfoRepository _victoryRepository;
 
   DocumentSnapshot _documentCache;
 
-  static VictoryRepository getInstance() {
+  static GameInfoRepository getInstance() {
     if (_victoryRepository == null) {
-      _victoryRepository = VictoryRepository();
+      _victoryRepository = GameInfoRepository();
     }
 
     return _victoryRepository;

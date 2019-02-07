@@ -1,5 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter_tic_tac_toe/ai/Ai.dart';
-import 'package:flutter_tic_tac_toe/storage/victory_repository.dart';
+import 'package:flutter_tic_tac_toe/storage/game_info_repository.dart';
 import 'package:flutter_tic_tac_toe/ai/Utils.dart';
 
 class GamePresenter {
@@ -8,15 +10,15 @@ class GamePresenter {
   void Function(int idx) showMoveOnUi;
   void Function(int winningPlayer) showGameEnd;
 
-  VictoryRepository _repository;
+  GameInfoRepository _repository;
   Ai _aiPlayer;
 
   GamePresenter(this.showMoveOnUi, this.showGameEnd) {
-    _repository = VictoryRepository.getInstance();
+    _repository = GameInfoRepository.getInstance();
     _aiPlayer = Ai();
   }
 
-  void onHumanPlayed(List<int> board) {
+  void onHumanPlayed(List<int> board) async {
 
     // evaluate the board after the human player
     int evaluation = Utils.evaluateBoard(board);
@@ -25,8 +27,8 @@ class GamePresenter {
       return;
     }
 
-    // calculate the next move
-    int aiMove = _aiPlayer.play(board, Ai.AI_PLAYER);
+    // calculate the next move, could be an expensive operation
+    int aiMove = await Future(() => _aiPlayer.play(board, Ai.AI_PLAYER));
 
     // do the next move
     board[aiMove] = Ai.AI_PLAYER;
