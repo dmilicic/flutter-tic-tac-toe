@@ -1,11 +1,10 @@
 import 'dart:async';
 
-import 'package:flutter_tic_tac_toe/ai/Ai.dart';
+import 'package:flutter_tic_tac_toe/ai/ai.dart';
 import 'package:flutter_tic_tac_toe/storage/game_info_repository.dart';
-import 'package:flutter_tic_tac_toe/ai/Utils.dart';
+import 'package:flutter_tic_tac_toe/ai/utils.dart';
 
 class GamePresenter {
-
   // callbacks into our UI
   void Function(int idx) showMoveOnUi;
   void Function(int winningPlayer) showGameEnd;
@@ -19,7 +18,6 @@ class GamePresenter {
   }
 
   void onHumanPlayed(List<int> board) async {
-
     // evaluate the board after the human player
     int evaluation = Utils.evaluateBoard(board);
     if (evaluation != Ai.NO_WINNERS_YET) {
@@ -48,8 +46,4 @@ class GamePresenter {
 
     showGameEnd(winner);
   }
-
-
-
-
 }
